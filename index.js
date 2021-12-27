@@ -1,8 +1,14 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { appendSubscription, sendNotification, getSubscriptionsFromFile } = require('./helpers');
 require('dotenv').config();
+
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+const db = mongoose.connection;
+db.on('error', err => console.log(err));
+db.once('open', () => console.log('Connected to DB'));
 
 const app = express();
 
@@ -38,7 +44,7 @@ app.post('/basket/purchase', async function (req, res) {
 
 app.post('/app/notify', jsonParser, async function (req, res) {
   console.log('NOTIFY');
-  console.log('body', req.body);
+
   try {
     const { title, content, data } = req.body || {};
 
@@ -47,16 +53,17 @@ app.post('/app/notify', jsonParser, async function (req, res) {
       content,
       data: data || null,
     });
-
-    await sendNotification(payload);
-    const subscriptions = await getSubscriptionsFromFile();
-    res.json(subscriptions);
+    console.log('body', payload);
+    sendNotification(payload);
+    // const subscriptions = await getSubscriptionsFromFile();
+    res.json({ la: 'lalala' });
   } catch (err) {
     console.log('SEND NOTIFICATION ERROR', err);
   }
 });
 
 app.post('/app/register', jsonParser, async function (req, res) {
+  console.log('REGISTRATION', req);
   try {
     await appendSubscription(req.body);
     res.json({});
