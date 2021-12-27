@@ -57,4 +57,5 @@ const sendNotification = async payload => {
 module.exports = {
   appendSubscription,
   sendNotification,
+  getSubscriptionsFromFile,
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { appendSubscription, sendNotification } = require('./helpers');
+const { appendSubscription, sendNotification, getSubscriptionsFromFile } = require('./helpers');
 require('dotenv').config();
 
 const app = express();
@@ -49,7 +49,8 @@ app.post('/app/notify', jsonParser, async function (req, res) {
     });
 
     await sendNotification(payload);
-    res.json(payload);
+    const subscriptions = await getSubscriptionsFromFile();
+    res.json(subscriptions);
   } catch (err) {
     console.log('SEND NOTIFICATION ERROR', err);
   }
