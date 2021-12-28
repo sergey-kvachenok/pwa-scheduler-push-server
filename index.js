@@ -63,10 +63,10 @@ app.post('/app/notify', jsonParser, async function (req, res) {
 });
 
 app.post('/app/register', jsonParser, async function (req, res) {
-  console.log('REGISTRATION', req);
+  console.log('REGISTRATION');
   try {
-    await appendSubscription(req.body);
-    res.json({});
+    const subscription = await appendSubscription(req.body);
+    res.json(subscription);
   } catch (err) {
     console.log('REGISTER SUBSCRIPTION ERROR', err);
   }
